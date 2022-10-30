@@ -43,10 +43,10 @@ exports.sendVerificationEmail = async (name, email, _id) => {
 };
 
 exports.sendResetPasswordEmail = async (name, email, passwordResetToken) => {
-  const mailOptions = {
+  const optionSetup = {
     email,
     subject: 'Password Reset Email',
     html: `<p>Hello ${name} . Please click here to  <a href="http://127.0.0.1:3001/api/reset-password?token=${passwordResetToken}">reset password </a> </p>`, // html body
   };
-  emailSetUp(mailOptions);
+  emailSetUp(optionSetup);
 };
