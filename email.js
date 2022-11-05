@@ -35,6 +35,7 @@ exports.sendEmailWithNodeMailer = async (req, res, emailData) => {
 
 
 // registerUserController
+// api/register
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
@@ -63,15 +64,71 @@ const registerUser = async (req, res) => {
       subject: "Account Activation Email",
       html: `
       <h2> Hello ${name} . </h2>
-      <p> Please click here to  activate your account http://127.0.0.1:3000/auth/activte/${token} </p>
-      
-      
+      <p> Please click here to  activate your account http://127.0.0.1:3000/auth/activte/${token} </p>     
       `, // html body
     };
 
     sendEmailWithNodeMailer(req, res, emailData);
   } catch (error) {
     return res.json({
+      message: error.message,
+    });
+  }
+};
+
+// api/activate-account
+const accountActivation = async (req, res) => {
+  console.log("account activate");
+  try {
+    const { token } = req.body;
+    if (token) {
+      jwt.verify(
+        token,
+        String(dev.app.accountActivationKey),
+        async (err, decoded) => {
+          if (err) {
+            console.log("JWT Verification error", err);
+            return res.status(401).json({
+              error: "Expired Link. signup again",
+            });
+          }
+
+          const { name, email, hashedPassword, phone } = jwt.decode(token);
+
+          const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            phone,
+            isVerify: 1,
+          });
+
+          console.log(newUser);
+
+          // double guard
+          const existingUser = await User.findOne({ email });
+
+          if (existingUser) {
+            return res.status(400).json({
+              message: "user already exist with this email",
+            });
+          }
+
+          const userData = await newUser.save();
+          if (!userData) {
+            return res.status(400).send({
+              message: "user was not created",
+            });
+          }
+
+          return res.status(200).send({
+            message: "user was created successfully ! Please signin",
+          });
+        }
+      );
+    }
+  } catch (error) {
+    res.json({
       message: error.message,
     });
   }
