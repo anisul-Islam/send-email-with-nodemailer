@@ -1,3 +1,4 @@
+// helpers/email.js
 const nodemailer = require("nodemailer");
 const dev = require("../config");
 
@@ -34,7 +35,7 @@ exports.sendEmailWithNodeMailer = async (req, res, emailData) => {
 };
 
 
-// registerUserController
+// controllers/auth.js
 // api/register
 const registerUser = async (req, res) => {
   try {
@@ -76,6 +77,7 @@ const registerUser = async (req, res) => {
   }
 };
 
+// controllers/auth.js
 // api/activate-account
 const accountActivation = async (req, res) => {
   console.log("account activate");
