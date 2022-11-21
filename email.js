@@ -2,7 +2,7 @@
 const nodemailer = require("nodemailer");
 const dev = require("../config");
 
-exports.sendEmailWithNodeMailer = async (req, res, emailData) => {
+exports.sendEmailWithNodeMailer = async (emailData) => {
   try {
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -69,7 +69,7 @@ const registerUser = async (req, res) => {
       `, // html body
     };
 
-    sendEmailWithNodeMailer(req, res, emailData);
+    sendEmailWithNodeMailer(emailData);
   } catch (error) {
     return res.json({
       message: error.message,
