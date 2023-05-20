@@ -1,11 +1,9 @@
 // helpers/email.js
-const nodemailer = require("nodemailer");
-const dev = require("../config");
+  const dev = require('../config');
+    const nodemailer = require('nodemailer');
 
-exports.sendEmailWithNodeMailer = async (emailData) => {
-  try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
+      host: 'smtp.gmail.com',
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
@@ -14,25 +12,23 @@ exports.sendEmailWithNodeMailer = async (emailData) => {
       },
     });
 
-    const mailOptions = {
-      from: dev.app.smtpUsername, // sender address
-      to: emailData.email, // list of receivers
-      subject: emailData.subject, // Subject line
-      html: emailData.html, // html body
-    };
+    exports.sendEmailWithNodeMailer = async (emailData) => {
+      try {
+        const mailOptions = {
+          from: dev.app.smtpUsername, // sender address
+          to: emailData.email, // list of receivers
+          subject: emailData.subject, // Subject line
+          html: emailData.html, // html body
+        };
 
-    // send mail with defined transport object
-    await transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Message sent: %s", info.response);
+        // send mail with defined transport object
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Message sent: %s', info.response);
+      } catch (error) {
+        console.log('Error occurred while sending Email: ', error);
+        throw error; // Propagate the error up to the caller
       }
-    });
-  } catch (error) {
-    console.log("Problem sending Email: ", error);
-  }
-};
+    };
 
 
 // controllers/auth.js
